@@ -1,14 +1,14 @@
 # DSY1105-002D_InsertCode
 Un proyecto de aplicación Android desarrollado en Kotlin, diseñado para demostrar la implementación de una arquitectura limpia y moderna utilizando las últimas herramientas recomendadas por Google.
 
-#Tecnologías y Arquitectura
+# Tecnologías y Arquitectura
 Este proyecto está construido con las siguientes tecnologías:
 Lenguaje: Kotlin
 Interfaz de Usuario (UI): Jetpack Compose (HomeScreen, Theme, Typography)
 Arquitectura: MVVM (Model - View - ViewModel)
 Build System: Gradle (Kotlin DSL - build.gradle.kts)
 
-#Estructura del Proyecto
+# Estructura del Proyecto
 El código fuente está organizado siguiendo los principios de la arquitectura MVVM para asegurar la separación de responsabilidades y la escalabilidad del código:
 app/src/main/java/com/example/.../
 model/: Contiene las clases de datos y la lógica de negocio pura.
@@ -17,7 +17,7 @@ viewmodel/: Contiene la lógica de presentación, conectando el modelo de datos 
 ui/: Contiene los componentes visuales de Jetpack Compose (pantallas y temas).
 MainActivity.kt: Punto de entrada principal de la aplicación.
 
-#Instalación y Ejecución
+# Instalación y Ejecución
 
 Para clonar y ejecutar este proyecto en tu entorno local, sigue estos pasos:
 Clona este repositorio:
