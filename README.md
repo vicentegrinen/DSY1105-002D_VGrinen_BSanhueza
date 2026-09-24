@@ -18,6 +18,14 @@ app/src/main/java/com/example/.../
 -ui/: Contiene los componentes visuales de Jetpack Compose (pantallas y temas).
 -MainActivity.kt: Punto de entrada principal de la aplicación.
 
+app/src/main/java/com/example/dsy1105_002d_vgrinen_bsanhueza/
+│
+├── model/         # Clases de datos y la lógica de negocio pura.
+├── repository/    # Operaciones de datos y conexión con APIs/BD.
+├── viewmodel/     # Lógica de presentación, conecta el Repository con la UI.
+├── ui/            # Componentes visuales de Jetpack Compose (pantallas y temas).
+└── MainActivity   # Punto de entrada principal de la aplicación.
+
 # Instalación y Ejecución
 
 Para clonar y ejecutar este proyecto en tu entorno local, sigue estos pasos:
