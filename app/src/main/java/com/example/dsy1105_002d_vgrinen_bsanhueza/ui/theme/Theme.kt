@@ -18,9 +18,12 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+    primary = NaranjaPrincipal,
+    background = CremaFondo,
+    secondary = VerdeAcento,
     tertiary = Pink40
+
+)
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -31,13 +34,13 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-)
+
 
 @Composable
 fun DSY1105002D_VGrinen_BSanhuezaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

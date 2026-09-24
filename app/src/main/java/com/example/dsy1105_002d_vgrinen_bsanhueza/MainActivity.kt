@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.theme.DSY1105002D_VGrinen_BSanhuezaTheme
-import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.theme.HomeScreen
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens.HomeScreen
 
 
 
@@ -24,14 +24,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DSY1105002D_VGrinen_BSanhuezaTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
                     HomeScreen()
                 }
             }
         }
     }
-}
+
 
