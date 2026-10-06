@@ -7,7 +7,8 @@ Aplicación Android desarrollada en Kotlin que implementa un flujo de registro d
 ## Funcionalidades
 
 - **Formulario de registro** con campos de nombre, correo, contraseña, dirección y aceptación de términos.
-- **Validaciones reactivas** desde el ViewModel, con errores visibles por campo (`isError` y `supportingText`).
+- **Validaciones reactivas** desde el ViewModel, con errores visibles por campo (`isError` y `supportingText`). Al enviar se validan todos los campos; si un campo ya tiene error, se revalida mientras el usuario escribe.
+- **Validación de términos y condiciones**: no se puede registrar sin aceptarlos, con mensaje de error bajo el checkbox.
 - **Pantalla de resumen** que muestra los datos ingresados, usando un **ViewModel compartido** entre pantallas (sin pasar argumentos por la ruta).
 - **Navegación** entre las pantallas `registro` y `resumen` con Navigation Compose.
 
@@ -30,10 +31,10 @@ El código fuente sigue los principios de MVVM para asegurar la separación de r
 
 Ruta base: `app/src/main/java/com/example/dsy1105_002d_vgrinen_bsanhueza/`
 
-- **`model/`**: Clases de datos del estado del formulario (`UsuarioUiState`, `UsuarioErrores`).
+- **`model/`**: Clases de datos del estado del formulario (`UsuarioUiState`, `UsuarioErrores`, que incluye el error de términos).
 - **`repository/`**: Operaciones de datos, mediador entre las fuentes de datos y la aplicación.
-- **`viewmodel/`**: Lógica de presentación (`UsuarioViewModel`): estado del formulario y validaciones.
-- **`navigation/`**: Grafo de navegación de la app (`AppNavigation`).
+- **`viewmodel/`**: Lógica de presentación (`UsuarioViewModel`): estado del formulario y reglas de validación por campo.
+- **`navegation/`**: Grafo de navegación de la app (`AppNavigation`).
 - **`ui/`**: Componentes visuales de Jetpack Compose (`screens/` y `theme/`).
 - **`MainActivity.kt`**: Punto de entrada principal de la aplicación.
 
@@ -47,12 +48,12 @@ app/src/main/java/com/example/dsy1105_002d_vgrinen_bsanhueza/
 │   └── UsuarioUiState.kt     # Estado completo del formulario.
 ├── repository/               # Operaciones de datos y conexión con APIs/BD.
 ├── viewmodel/
-│   └── UsuarioViewModel.kt   # Estado (StateFlow) y validarFormulario().
-├── navigation/
+│   └── UsuarioViewModel.kt   # Estado (StateFlow), validarFormulario() y reglas por campo.
+├── navegation/
 │   └── AppNavigation.kt      # NavHost con rutas "registro" y "resumen".
 ├── ui/
 │   ├── screens/
-│   │   ├── RegistroScreen.kt # Formulario con Material 3.
+│   │   ├── RegistroScreen.kt # Formulario con Material 3 y validaciones visibles.
 │   │   └── ResumenScreen.kt  # Muestra los datos ingresados.
 │   └── theme/                # Colores, tipografía y tema.
 └── MainActivity.kt           # Punto de entrada, inicia la navegación.
@@ -62,12 +63,19 @@ app/src/main/java/com/example/dsy1105_002d_vgrinen_bsanhueza/
 
 ## Reglas de validación
 
-| Campo      | Regla                                  |
-|------------|----------------------------------------|
-| Nombre     | Obligatorio                            |
-| Correo     | Debe contener `@`                      |
-| Contraseña | Mínimo 6 caracteres                    |
-| Dirección  | Obligatoria                            |
+| Campo      | Reglas                                                                                   | Mensaje de error (ejemplo)                      |
+|------------|------------------------------------------------------------------------------------------|-------------------------------------------------|
+| Nombre     | Obligatorio, de 2 a 50 caracteres, solo letras, espacios, `'` y `-`                      | "Solo se permiten letras y espacios"            |
+| Correo     | Obligatorio y con formato válido (`texto@dominio.ext`)                                   | "Correo inválido (ej: nombre@dominio.cl)"       |
+| Contraseña | De 6 a 32 caracteres, sin espacios, con al menos una letra y un número                   | "Debe incluir al menos un número"               |
+| Dirección  | Obligatoria, de 5 a 100 caracteres                                                       | "Ingresa una dirección más completa"            |
+| Términos   | Deben estar aceptados para poder registrarse                                             | "Debes aceptar los términos y condiciones"      |
+
+**Notas:**
+
+- Nombre, correo y dirección se validan con `trim()`, por lo que los espacios al inicio o al final no cuentan.
+- Cada regla es una función privada `validarX()` en `UsuarioViewModel`, que devuelve el mensaje de error o `null` si el valor es válido.
+- El botón **Registrar** solo navega a `resumen` si `validarFormulario()` devuelve `true`.
 
 ---
 
