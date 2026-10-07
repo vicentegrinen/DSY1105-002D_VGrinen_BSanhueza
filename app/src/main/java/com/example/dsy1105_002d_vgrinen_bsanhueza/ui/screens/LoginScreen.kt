@@ -2,37 +2,38 @@ package com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.UsuarioViewModel
+import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.LoginViewModel
 
 @Composable
-fun RegistroScreen(
+fun LoginScreen(
     navController: NavController,
-    viewModel: UsuarioViewModel
+    viewModel: LoginViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
+    var mostrarClave by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -41,17 +42,7 @@ fun RegistroScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedTextField(
-            value = estado.nombre,
-            onValueChange = viewModel::onNombreChange,
-            label = { Text("Nombre") },
-            singleLine = true,
-            isError = estado.errores.nombre != null,
-            supportingText = {
-                estado.errores.nombre?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Text("Iniciar sesión", style = MaterialTheme.typography.headlineMedium)
 
         OutlinedTextField(
             value = estado.correo,
@@ -71,8 +62,14 @@ fun RegistroScreen(
             onValueChange = viewModel::onClaveChange,
             label = { Text("Contraseña") },
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation =
+                if (mostrarClave) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                TextButton(onClick = { mostrarClave = !mostrarClave }) {
+                    Text(if (mostrarClave) "Ocultar" else "Mostrar")
+                }
+            },
             isError = estado.errores.clave != null,
             supportingText = {
                 estado.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) }
@@ -80,46 +77,27 @@ fun RegistroScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        OutlinedTextField(
-            value = estado.direccion,
-            onValueChange = viewModel::onDireccionChange,
-            label = { Text("Dirección") },
-            isError = estado.errores.direccion != null,
-            supportingText = {
-                estado.errores.direccion?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Checkbox: aceptar términos (con su mensaje de error)
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = estado.aceptaTerminos,
-                    onCheckedChange = viewModel::onAceptarTerminosChange
-                )
-                Spacer(Modifier.width(8.dp))
-                Text("Acepto los términos y condiciones")
-            }
-            estado.errores.terminos?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
+        // Error de credenciales incorrectas
+        estado.errores.general?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Button(
             onClick = {
-                if (viewModel.validarFormulario()) {
-                    navController.navigate("resumen")
+                if (viewModel.iniciarSesion()) {
+                    navController.navigate("bienvenida") {
+                        // Quita el login de la pila: con "atrás" no se vuelve a él
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Registrar")
+            Text("Ingresar")
         }
     }
 }
