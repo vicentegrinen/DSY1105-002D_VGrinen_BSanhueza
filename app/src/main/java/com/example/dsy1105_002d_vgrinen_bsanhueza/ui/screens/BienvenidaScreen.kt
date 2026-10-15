@@ -46,6 +46,12 @@ fun BienvenidaScreen(
         ) {
             Text("Ir al modo especial")
         }
+        Button(
+            onClick = { navController.navigate("perfil") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Mi perfil (cámara y galería)")
+        }
 
         Button(
             onClick = {
