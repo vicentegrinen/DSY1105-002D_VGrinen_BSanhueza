@@ -9,6 +9,7 @@ import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens.BienvenidaScreen
 import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens.LoginScreen
 import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens.PantallaPrincipal
 import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.LoginViewModel
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.screens.PerfilScreen
 
 @Composable
 fun AppNavigation() {
@@ -30,6 +31,10 @@ fun AppNavigation() {
         // Pantalla de la Guía 12 (estado + DataStore + animaciones)
         composable("modo_especial") {
             PantallaPrincipal()
+        }
+        // Pantalla de la Guía 13 (cámara y galería)
+        composable("perfil") {
+            PerfilScreen()
         }
     }
 }
