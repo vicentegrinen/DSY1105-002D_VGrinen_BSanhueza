@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <!-- Guía 13 (PerfilScreen): fotos en caché -->
     <cache-path name="imagenes" path="." />
+    <!-- Guía 14: fotos en getExternalFilesDir(Environment.DIRECTORY_PICTURES) -->
+    <external-files-path name="fotos" path="." />
+    <files-path name="fotos_internas" path="." />
 </paths>
