@@ -54,6 +54,19 @@ fun BienvenidaScreen(
         }
 
         Button(
+            onClick = { navController.navigate("registro") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Registro integral (Room + cámara)")
+        }
+        Button(
+            onClick = { navController.navigate("listado") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Usuarios guardados (offline)")
+        }
+
+        Button(
             onClick = {
                 viewModel.cerrarSesion()
                 navController.navigate("login") {
