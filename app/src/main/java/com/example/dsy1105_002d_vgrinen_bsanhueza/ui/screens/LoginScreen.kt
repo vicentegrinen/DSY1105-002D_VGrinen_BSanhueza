@@ -30,7 +30,9 @@ import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    cuentaCreada: Boolean = false,
+    onMensajeVisto: () -> Unit = {}
 ) {
     val estado by viewModel.estado.collectAsState()
     var mostrarClave by rememberSaveable { mutableStateOf(false) }
@@ -43,6 +45,15 @@ fun LoginScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Iniciar sesión", style = MaterialTheme.typography.headlineMedium)
+
+        // Aviso al volver desde "Crear cuenta"
+        if (cuentaCreada) {
+            Text(
+                text = "Cuenta creada. Ya puedes iniciar sesión.",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
         OutlinedTextField(
             value = estado.correo,
@@ -88,7 +99,8 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                if (viewModel.iniciarSesion()) {
+                onMensajeVisto()
+                viewModel.iniciarSesion {
                     navController.navigate("bienvenida") {
                         // Quita el login de la pila: con "atrás" no se vuelve a él
                         popUpTo("login") { inclusive = true }
@@ -98,6 +110,14 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ingresar")
+        }
+
+        // Acceso al registro de usuarios nuevos
+        TextButton(
+            onClick = { navController.navigate("crear_cuenta") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }

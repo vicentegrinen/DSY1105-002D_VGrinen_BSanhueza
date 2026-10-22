@@ -1,15 +1,21 @@
 package com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.LoginErrores
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.LoginUiState
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.Rol
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.Usuario
+import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.CuentaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val cuentaRepo: CuentaRepository
+) : ViewModel() {
 
     private val _estado = MutableStateFlow(LoginUiState())
     val estado: StateFlow<LoginUiState> = _estado
@@ -34,9 +40,9 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-
-
-    fun iniciarSesion(): Boolean {
+    // Valida el formulario y comprueba las credenciales: primero contra los usuarios de prueba
+    // y luego contra las cuentas creadas en "Crear cuenta" (Room). Llama onExito si coinciden.
+    fun iniciarSesion(onExito: () -> Unit) {
         val actual = _estado.value
 
         val errores = LoginErrores(
@@ -44,32 +50,35 @@ class LoginViewModel : ViewModel() {
             clave = validarClave(actual.clave)
         )
 
-
         if (errores.correo != null || errores.clave != null) {
             _estado.update { it.copy(errores = errores) }
-            return false
+            return
         }
 
-        val usuario = USUARIOS.firstOrNull {
-            it.correo.equals(actual.correo.trim(), ignoreCase = true) &&
-                it.clave == actual.clave
-        }
-
-        if (usuario == null) {
-            _estado.update {
-                it.copy(errores = LoginErrores(general = "Correo o contraseña incorrectos"))
+        viewModelScope.launch {
+            val usuarioPrueba = USUARIOS.firstOrNull {
+                it.correo.equals(actual.correo.trim(), ignoreCase = true) &&
+                    it.clave == actual.clave
             }
-            return false
+
+            val rol: Rol? = usuarioPrueba?.rol
+                ?: cuentaRepo.autenticar(actual.correo, actual.clave)?.let { Rol.OPERADOR }
+
+            if (rol == null) {
+                _estado.update {
+                    it.copy(errores = LoginErrores(general = "Correo o contraseña incorrectos"))
+                }
+                return@launch
+            }
+
+            _estado.update { it.copy(clave = "", rol = rol, errores = LoginErrores()) }
+            onExito()
         }
-        _estado.update { it.copy(clave = "", rol = usuario.rol, errores = LoginErrores()) }
-        return true
     }
 
     fun cerrarSesion() {
         _estado.value = LoginUiState()
     }
-
-
 
     private fun validarCorreo(valor: String): String? {
         val v = valor.trim()
@@ -93,4 +102,12 @@ class LoginViewModel : ViewModel() {
 
         val REGEX_CORREO = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     }
+}
+
+class LoginViewModelFactory(
+    private val cuentaRepo: CuentaRepository
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        LoginViewModel(cuentaRepo) as T
 }

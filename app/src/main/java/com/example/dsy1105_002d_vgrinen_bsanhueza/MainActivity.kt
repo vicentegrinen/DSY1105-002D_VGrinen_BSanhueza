@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.example.dsy1105_002d_vgrinen_bsanhueza.data.AppDatabase
 import com.example.dsy1105_002d_vgrinen_bsanhueza.data.PreferencesManager
 import com.example.dsy1105_002d_vgrinen_bsanhueza.navegation.AppNavigation
+import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.CuentaRepository
 import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.UsuarioRepository
 import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.theme.DSY1105002D_VGrinen_BSanhuezaTheme
 import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.UsuarioViewModel
@@ -19,10 +20,11 @@ import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.UsuarioViewModelFact
 
 class MainActivity : ComponentActivity() {
 
-    // Se inicializan en onCreate: base de datos ROOM, DataStore, repositorio y factory
+    // Se inicializan en onCreate: base de datos ROOM, DataStore, repositorios y factory
     private lateinit var database: AppDatabase
     private lateinit var preferencesManager: PreferencesManager
     private lateinit var repository: UsuarioRepository
+    private lateinit var cuentaRepository: CuentaRepository
 
     private val usuarioViewModel: UsuarioViewModel by viewModels {
         UsuarioViewModelFactory(repository, preferencesManager)
@@ -33,13 +35,14 @@ class MainActivity : ComponentActivity() {
         database = AppDatabase.getDatabase(applicationContext)
         preferencesManager = PreferencesManager(applicationContext)
         repository = UsuarioRepository(database.usuarioDao())
+        cuentaRepository = CuentaRepository(database.cuentaDao())
 
         enableEdgeToEdge()
         setContent {
             DSY1105002D_VGrinen_BSanhuezaTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigation(usuarioViewModel)
+                        AppNavigation(usuarioViewModel, cuentaRepository)
                     }
                 }
             }

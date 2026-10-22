@@ -6,11 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [UsuarioEntity::class], version = 1, exportSchema = false)
+// version 2: se agregó la tabla "cuentas" (Crear cuenta)
+@Database(
+    entities = [UsuarioEntity::class, CuentaEntity::class],
+    version = 2,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun cuentaDao(): CuentaDao
 
     companion object {
         @Volatile
@@ -22,7 +28,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_db"
-                ).build().also { INSTANCE = it }
+                )
+                    // Proyecto de curso: al subir de versión se recrea la base (borra los datos de prueba)
+                    .fallbackToDestructiveMigration(true)
+                    .build().also { INSTANCE = it }
             }
     }
 }
