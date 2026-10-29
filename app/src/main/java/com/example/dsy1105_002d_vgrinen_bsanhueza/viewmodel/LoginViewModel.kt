@@ -8,6 +8,7 @@ import com.example.dsy1105_002d_vgrinen_bsanhueza.model.LoginUiState
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.Rol
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.Usuario
 import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.CuentaRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -76,7 +77,15 @@ class LoginViewModel(
         }
     }
 
+    // Sesión iniciada con Google o Apple: el proveedor ya validó la identidad,
+    // así que no se revisan contraseñas. Las cuentas sociales entran con rol Operador.
+    fun iniciarSesionSocial(correo: String) {
+        _estado.value = LoginUiState(correo = correo.trim(), rol = Rol.OPERADOR)
+    }
+
     fun cerrarSesion() {
+        // Cierra también la sesión de Firebase (si hubo login con Google/Apple)
+        runCatching { FirebaseAuth.getInstance().signOut() }
         _estado.value = LoginUiState()
     }
 

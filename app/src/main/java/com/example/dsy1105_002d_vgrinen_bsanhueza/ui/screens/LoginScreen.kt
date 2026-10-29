@@ -25,6 +25,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.components.BotonesSociales
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.components.SeparadorConTexto
 import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.LoginViewModel
 
 @Composable
@@ -111,6 +113,20 @@ fun LoginScreen(
         ) {
             Text("Ingresar")
         }
+
+        // Inicio de sesión con Google / Apple
+        SeparadorConTexto("o continúa con")
+        BotonesSociales(
+            onExito = { resultado ->
+                onMensajeVisto()
+                viewModel.iniciarSesionSocial(resultado.correo)
+                navController.navigate("bienvenida") {
+                    popUpTo("login") { inclusive = true }
+                }
+            },
+            textoGoogle = "Iniciar sesión con Google",
+            textoApple = "Iniciar sesión con Apple"
+        )
 
         // Acceso al registro de usuarios nuevos
         TextButton(

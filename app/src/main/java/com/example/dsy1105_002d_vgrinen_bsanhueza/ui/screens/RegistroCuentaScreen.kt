@@ -33,14 +33,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dsy1105_002d_vgrinen_bsanhueza.auth.ResultadoSocial
 import com.example.dsy1105_002d_vgrinen_bsanhueza.model.PAISES
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.components.BotonesSociales
+import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.components.SeparadorConTexto
 import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.RegistroCuentaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroCuentaScreen(
     navController: NavController,
-    viewModel: RegistroCuentaViewModel
+    viewModel: RegistroCuentaViewModel,
+    // Se llama cuando el registro con Google/Apple termina bien (la cuenta queda creada y con sesión)
+    onSocialExito: (ResultadoSocial.Exito) -> Unit
 ) {
     val estado by viewModel.estado.collectAsState()
     val errores by viewModel.errores.collectAsState()
@@ -58,6 +63,14 @@ fun RegistroCuentaScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Crear cuenta", style = MaterialTheme.typography.headlineMedium)
+
+        // Registro rápido con Google / Apple
+        BotonesSociales(
+            onExito = onSocialExito,
+            textoGoogle = "Registrarse con Google",
+            textoApple = "Registrarse con Apple"
+        )
+        SeparadorConTexto("o crea una cuenta con tu correo")
 
         // Correo
         OutlinedTextField(
