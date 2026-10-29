@@ -53,7 +53,17 @@ fun AppNavigation(
         }
         // Registro de usuarios nuevos (se llega desde el login)
         composable("crear_cuenta") {
-            RegistroCuentaScreen(navController, registroCuentaViewModel)
+            RegistroCuentaScreen(
+                navController = navController,
+                viewModel = registroCuentaViewModel,
+                onSocialExito = { resultado ->
+                    loginViewModel.iniciarSesionSocial(resultado.correo)
+                    navController.navigate("bienvenida") {
+                        // Quita login y registro de la pila
+                        popUpTo("login") { inclusive = true }
+                    }
+                }
+            )
         }
         composable("bienvenida") {
             BienvenidaScreen(navController, loginViewModel)
