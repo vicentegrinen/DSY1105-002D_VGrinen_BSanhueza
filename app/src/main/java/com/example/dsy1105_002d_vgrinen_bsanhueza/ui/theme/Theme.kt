@@ -9,20 +9,64 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+// Modo Guardián: versión oscura de la paleta del diseño
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Color(0xFFA9C4F5),
+    onPrimary = Color(0xFF0B2347),
+    primaryContainer = AzulGuardian,
+    onPrimaryContainer = SeleccionGuardian,
+    secondary = Color(0xFFA9C4F5),
+    onSecondary = Color(0xFF0B2347),
+    secondaryContainer = Color(0xFF2B4674),
+    onSecondaryContainer = SeleccionGuardian,
+    tertiary = Color(0xFF9BD4A0),
+    background = Color(0xFF0F1524),
+    onBackground = Color(0xFFE3E8F2),
+    surface = Color(0xFF182033),
+    onSurface = Color(0xFFE3E8F2),
+    surfaceVariant = Color(0xFF232D45),
+    onSurfaceVariant = Color(0xFFB4BED3),
+    surfaceContainerLowest = Color(0xFF0F1524),
+    surfaceContainerLow = Color(0xFF182033),
+    surfaceContainer = Color(0xFF182033),
+    surfaceContainerHigh = Color(0xFF232D45),
+    surfaceContainerHighest = Color(0xFF2E3A52),
+    outline = BordeCampo,
+    outlineVariant = Color(0xFF2E3A52),
+    error = Color(0xFFFFB4AB)
 )
 
+// Modo Guardián: paleta del diseño (barra #1B3A6B, fondo #F4F6FA, tarjetas blancas)
 private val LightColorScheme = lightColorScheme(
-    primary = NaranjaPrincipal,
-    background = CremaFondo,
-    secondary = VerdeAcento,
-    tertiary = Pink40
-
+    primary = AzulGuardian,
+    onPrimary = Color.White,
+    primaryContainer = SeleccionGuardian,
+    onPrimaryContainer = TextoPrincipal,
+    secondary = AzulGuardian,
+    onSecondary = Color.White,
+    secondaryContainer = SeleccionGuardian,
+    onSecondaryContainer = TextoPrincipal,
+    tertiary = BajaTexto,
+    background = FondoGuardian,
+    onBackground = TextoPrincipal,
+    surface = Color.White,
+    onSurface = TextoPrincipal,
+    surfaceVariant = FondoGuardian,
+    onSurfaceVariant = TextoSecundario,
+    surfaceContainerLowest = Color.White,
+    surfaceContainerLow = Color.White,
+    surfaceContainer = Color.White,
+    surfaceContainerHigh = Color(0xFFEEF1F7),
+    surfaceContainerHighest = Color(0xFFE6EAF2),
+    outline = BordeCampo,
+    outlineVariant = BordeTarjeta,
+    error = CriticaTexto,
+    onError = Color.White,
+    errorContainer = CriticaFondo,
+    onErrorContainer = CriticaTexto
 )
 
     /* Other default colors to override

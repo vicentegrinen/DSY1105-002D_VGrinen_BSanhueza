@@ -10,9 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.dsy1105_002d_vgrinen_bsanhueza.data.AppDatabase
+import com.example.dsy1105_002d_vgrinen_bsanhueza.data.GuardianCacheDatabase
 import com.example.dsy1105_002d_vgrinen_bsanhueza.data.PreferencesManager
 import com.example.dsy1105_002d_vgrinen_bsanhueza.navegation.AppNavigation
+import com.example.dsy1105_002d_vgrinen_bsanhueza.remote.RetrofitInstance
+import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.CamaraRepository
 import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.CuentaRepository
+import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.EventoRepository
+import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.UsuarioPruebaRepository
 import com.example.dsy1105_002d_vgrinen_bsanhueza.repository.UsuarioRepository
 import com.example.dsy1105_002d_vgrinen_bsanhueza.ui.theme.DSY1105002D_VGrinen_BSanhuezaTheme
 import com.example.dsy1105_002d_vgrinen_bsanhueza.viewmodel.UsuarioViewModel
@@ -26,6 +31,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var repository: UsuarioRepository
     private lateinit var cuentaRepository: CuentaRepository
 
+    // Modo Guardián (Guía 14): repositorios que consumen la API REST
+    private lateinit var eventoRepository: EventoRepository
+    private lateinit var camaraRepository: CamaraRepository
+    private lateinit var usuarioPruebaRepository: UsuarioPruebaRepository
+
     private val usuarioViewModel: UsuarioViewModel by viewModels {
         UsuarioViewModelFactory(repository, preferencesManager)
     }
@@ -36,13 +46,24 @@ class MainActivity : ComponentActivity() {
         preferencesManager = PreferencesManager(applicationContext)
         repository = UsuarioRepository(database.usuarioDao())
         cuentaRepository = CuentaRepository(database.cuentaDao())
+        // La copia local (Room) permite mostrar los últimos datos cuando no hay conexión
+        val cacheDao = GuardianCacheDatabase.getDatabase(applicationContext).cacheDao()
+        eventoRepository = EventoRepository(RetrofitInstance.api, cacheDao)
+        camaraRepository = CamaraRepository(RetrofitInstance.api, cacheDao)
+        usuarioPruebaRepository = UsuarioPruebaRepository(RetrofitInstance.api)
 
         enableEdgeToEdge()
         setContent {
             DSY1105002D_VGrinen_BSanhuezaTheme {
                 Scaffold { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigation(usuarioViewModel, cuentaRepository)
+                        AppNavigation(
+                            usuarioViewModel,
+                            cuentaRepository,
+                            eventoRepository,
+                            camaraRepository,
+                            usuarioPruebaRepository
+                        )
                     }
                 }
             }

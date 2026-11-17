@@ -33,6 +33,11 @@ android {
     }
 }
 
+// Guía 15: las pruebas unitarias (src/test) corren sobre JUnit Platform (Kotest + JUnit5)
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -44,6 +49,16 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     testImplementation(libs.junit)
+    // Guía 15: Kotest (StringSpec) + MockK + corrutinas de prueba + JUnit5
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    // Mantiene ejecutables las pruebas JUnit4 existentes (ExampleUnitTest) sobre JUnit Platform
+    testRuntimeOnly(libs.junit.vintage.engine)
+    // Gradle 9 ya no agrega el launcher por su cuenta
+    testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -54,7 +69,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Guía 14: corrutinas 1.8.0 (la versión viene del catálogo)
+    implementation(libs.kotlinx.coroutines.android)
     implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -71,5 +87,12 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     // Permite usar .await() sobre las Task de Firebase
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    // Guía 14: consumo de API REST (Retrofit + conversor Gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    // Cliente HTTP de Retrofit: se declara porque ApiSimulada usa su Interceptor.
+    // Es la misma versión que ya llegaba como dependencia de Coil.
+    implementation(libs.okhttp)
 }

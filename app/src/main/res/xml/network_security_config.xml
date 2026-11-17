@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Guía 14: Android bloquea HTTP sin cifrar por defecto.
+    Se permite solo hacia el backend de prueba local:
+    10.0.2.2 es el "localhost" del PC visto desde el emulador.
+    Cualquier otro dominio sigue exigiendo HTTPS.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>
