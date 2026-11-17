@@ -10,6 +10,15 @@ build/
 # Archivos locales (ruta del SDK de tu PC)
 local.properties
 
+# Claves y secretos: nunca se suben (el repositorio es público)
+*.jks
+*.keystore
+.env
+.env.*
+
+# Caché del compilador de Kotlin
+.kotlin/
+
 # Native
 .externalNativeBuild
 .cxx
